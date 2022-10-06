@@ -70,6 +70,8 @@ class HTTPClient(object):
 
     def get_headers(self,data):
         # IMPORTANT SELF note make sure to cite the stack overflow page u used for this solution
+        # https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
+        # I used the cite above to solve this problem
         find_delimitter = data.find('\r\n\r\n')
         if find_delimitter >= 0:
             return data[:find_delimitter]
@@ -77,6 +79,8 @@ class HTTPClient(object):
 
     def get_body(self, data):
         # IMPORTANT SELF note make sure to cite the stack overflow page u used for this solution
+        # https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
+        # I used the cite above to solve this problem
         find_delimitter = data.find('\r\n\r\n')
         if find_delimitter >= 0:
             return data[find_delimitter +4:]
