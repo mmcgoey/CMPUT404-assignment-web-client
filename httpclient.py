@@ -69,7 +69,6 @@ class HTTPClient(object):
         return code
 
     def get_headers(self,data):
-        # IMPORTANT SELF note make sure to cite the stack overflow page u used for this solution
         # https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
         # I used the cite above to solve this problem
         find_delimitter = data.find('\r\n\r\n')
@@ -78,7 +77,6 @@ class HTTPClient(object):
         return data
 
     def get_body(self, data):
-        # IMPORTANT SELF note make sure to cite the stack overflow page u used for this solution
         # https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
         # I used the cite above to solve this problem
         find_delimitter = data.find('\r\n\r\n')
@@ -152,48 +150,6 @@ class HTTPClient(object):
         self.socket.close()
 
         
-
-
-
-        #args= url
-        #args = sys.argv[1]
-        #print("is url provided!!!",url)
-        #self.get_host_port(url)
-        #print("is GET CALLED",args)
-        #payload = f'GET / HTTP/1.0\r\nHost: {host}\r\n\r\n'
-        #host = url
-        #host = urllib.parse.urlparse(url).hostname
-
-        #print("HOST TYPE",type(host))
-
-        #print("WHAT IS HOST",host)
-        
-        #body = 'GET %s HTTP/1.1\r\nHost: %s\r\n\r\n'%(url,host)
-
-        #port = self.get_host_port(url)
-
-        #print("TEST PORT STUFF", port)
-
-        #self.connect('127.0.0.1',int(port))
-
-        #self.sendall(body)
-        
-        #self.socket.close()
-
-        #recv_info = self.recvall(self.socket)
-
-        #self.close()
-
-        #body += recv_info
-
-        #code = int(recv_info.split()[1])
-
-        #print ("RECEIVE WHAT??",recv_info)
-        #print("RECEIVE WHAT??",self.recvall(self.socket))
-        #for i in self.recvall(self.socket):
-        #    print("WHAT IS IIII",i)
-        #body = ""
-        #print("CHECK HTTPS RESPONSE",HTTPResponse(code,recv_info))
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
@@ -202,19 +158,10 @@ class HTTPClient(object):
         host = urllib.parse.urlparse(url).hostname
 
         host = str(host)
-        #jsonArgs = args
-        #jsonArgs = json.dumps(jsonArgs)
+        
         print("WHAT ARE THE ARGS",args)
 
-        #key_value = ""
-        #for key in args:
-        #    key_value+=key + "="
-        #    key_value = key_value + args[key]
-        #    key_value = key_value+ '&' 
-       #     print("is this working?",args[key])
-       # print("WHAT IS KEY_VALUE",key_value)
         
-        #host_name = socket.gethostbyname(host)
         
         host_ip = self.get_remote_ip(host)
 
@@ -229,107 +176,46 @@ class HTTPClient(object):
         print("WHAT IS IP",host_ip)
         print("WHAT IS THE URL",url)
 
-        #key_value = "a="
-        #key_value += args['a']
-        #body = ""
-        #key_value = ""
-        #for key in args:
-        #    key_value += ":" + args[key]
-        #print("DOES KEY_VALUE DO ANYTHING",key_value)
-        #response = 'GET %s HTTP/1.1\r\nHost: %s\r\n\r\n'%(url,host)
-        #response = 'POST %s HTTP/1.1\r\nHost: %s\r\nAccept: application/x-www-form-urlencoded\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: %d\r\n\r\n'%(url,host,len(args)) + key_value
+       
 
-        args_encode = urlencode(args)
+        if args != None:
+            args_encode = urlencode(args)
+            print("WHAT IS args_encode",args_encode)
+            response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: %d\r\nConnection: close\r\n\r\n'%(url,host,port,len(args_encode)) + args_encode 
+        else:
+            response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'%(url,host,port) 
 
-       # bytes_size = getsizeof(args_encode)
-        #print("WHAT IS BYTES_SIZE",bytes_size)
 
-        print("WHAT IS args_encode",args_encode)
-        response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: %d\r\nConnection: close\r\n\r\n'%(url,host,port,len(args_encode)) + args_encode 
+       
 
         print("WHAT IS MY RESPONSE", response)
-        #response = json.dumps(args) 
-        #response = 'GET / HTTP/1.1\r\nHost: %s\r\n\r\n'%(host)
+        
 
         self.connect(host_ip,port)
 
         self.sendall(response)
-        #self.sendall(args_encode)
-       # self.sendall(jsonArgs)
+      
 
         #self.socket.shutdown(socket.SHUT_WR)
 
         recv_info = self.recvall(self.socket)
 
-        #recv_info = self.recvall(self.socket)
+        
 
         print("IS RECV_INFO EMPTY",recv_info)
-        #code = int(recv_info.split()[1])
+       
 
         code = self.get_code(recv_info)
         body = self.get_body(recv_info)
         
 
         print("WHAT IS CODE IF NOT 200?",body)
-        #code = int(recv_info.split()[1])
-
-        #body += recv_info
-        #print("WHAT IS CODE",body)
+       
 
         self.close()
 
 
 
-
-
-        #for arg in args:
-        #    print("ARG CHECK",args[arg])
-        #print("HOST TYPE",type(host))
-
-        #print("WHAT IS HOST",host)
-
-        #response = 'POST %s HTTP/1.1\r\nHost: %s\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\n'%(url,host)+str(args)
-
-        #response = str(response)
-        #print("WHAT IS MY RESPONSE", response)
-
-        
-        #self.connect('127.0.0.1',int(port))
-
-        #self.sendall(response)
-        
-        #self.socket.close()
-
-        #recv_info = self.recvall(self.socket)
-
-        #self.close()
-
-        #body = 'GET %s HTTP/1.1\r\nHost: %s\r\n\r\n'%(url,host)
-
-        #port = self.get_host_port(url)
-
-        #print("TEST PORT STUFF", port)
-
-        #self.connect('127.0.0.1',int(port))
-
-        #self.sendall(body)
-        
-        #self.socket.close()
-
-        #recv_info = self.recvall(self.socket)
-
-        #self.close()
-
-        #body += recv_info
-
-
-
-        #body += recv_info
-
-        #code = body
-        #print("WHAT IS CODE!",code)
-
-        #print("IS POST CALLED")
         
         return HTTPResponse(code, body)
 
