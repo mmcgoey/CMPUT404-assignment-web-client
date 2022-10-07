@@ -42,13 +42,13 @@ class HTTPResponse(object):
 class HTTPClient(object):
     def get_host_port(self,url):
         port_num = urllib.parse.urlparse(url).port
-        print("HOST NAME",urllib.parse.urlparse(url).hostname)
+        #print("HOST NAME",urllib.parse.urlparse(url).hostname)
         return port_num
         #print("WHAT IS PARSE",port_num)
     
     def get_remote_ip(self,host):
         #Note this method was provided in the lab 2 code
-        print(f'Getting IP for {host}')
+        #print(f'Getting IP for {host}')
         try:
             remote_ip = socket.gethostbyname( host )
         except socket.gaierror:
@@ -109,7 +109,7 @@ class HTTPClient(object):
         body = ""
 
         host = urllib.parse.urlparse(url).hostname
-        print ("IS HOST RETURNING?",host)
+        #print ("IS HOST RETURNING?",host)
         #host_name = socket.gethostbyname(host)
         
         host_ip = self.get_remote_ip(host)
@@ -119,11 +119,11 @@ class HTTPClient(object):
 
         if port == None:
             port = 80
-            print("FOUND PROBLEMMMMM")
+            #print("FOUND PROBLEMMMMM")
 
-        print("is port now 80?",port)
-        print("WHAT IS IP",host_ip)
-        print("WHAT IS THE URL",url)
+        #print("is port now 80?",port)
+        #print("WHAT IS IP",host_ip)
+        #print("WHAT IS THE URL",url)
 
         response = 'GET %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n'%(url,host)
         #response = 'GET / HTTP/1.1\r\nHost: %s\r\n\r\n'%(host)
@@ -136,16 +136,18 @@ class HTTPClient(object):
 
         recv_info = self.recvall(self.socket)
 
-        is_headers = self.get_headers(recv_info)
-        print("CHECK IF GET_HEADERS WORKS",is_headers)
+        print(recv_info)
 
-        print("IS RECV_INFO EMPTY",recv_info)
+        is_headers = self.get_headers(recv_info)
+        #print("CHECK IF GET_HEADERS WORKS",is_headers)
+
+        #print("IS RECV_INFO EMPTY",recv_info)
         #code = recv_info.split()
         code = self.get_code(recv_info)
 
         body = self.get_body(recv_info)
         #body += recv_info
-        print("WHAT IS CODE",body)
+        #print("WHAT IS CODE",body)
 
         self.socket.close()
 
@@ -159,7 +161,7 @@ class HTTPClient(object):
 
         host = str(host)
         
-        print("WHAT ARE THE ARGS",args)
+        #print("WHAT ARE THE ARGS",args)
 
         
         
@@ -170,17 +172,17 @@ class HTTPClient(object):
 
         if port == None:
             port = 80
-            print("FOUND PROBLEMMMMM")
+            #print("FOUND PROBLEMMMMM")
 
-        print("is port now 80?",port)
-        print("WHAT IS IP",host_ip)
-        print("WHAT IS THE URL",url)
+        #print("is port now 80?",port)
+        #print("WHAT IS IP",host_ip)
+        #print("WHAT IS THE URL",url)
 
        
 
         if args != None:
             args_encode = urlencode(args)
-            print("WHAT IS args_encode",args_encode)
+            #print("WHAT IS args_encode",args_encode)
             response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: %d\r\nConnection: close\r\n\r\n'%(url,host,port,len(args_encode)) + args_encode 
         else:
             response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'%(url,host,port) 
@@ -188,7 +190,7 @@ class HTTPClient(object):
 
        
 
-        print("WHAT IS MY RESPONSE", response)
+        #print("WHAT IS MY RESPONSE", response)
         
 
         self.connect(host_ip,port)
@@ -200,16 +202,18 @@ class HTTPClient(object):
 
         recv_info = self.recvall(self.socket)
 
+        print(recv_info)
         
 
-        print("IS RECV_INFO EMPTY",recv_info)
+        #print("IS RECV_INFO EMPTY",recv_info)
        
 
         code = self.get_code(recv_info)
+
         body = self.get_body(recv_info)
         
 
-        print("WHAT IS CODE IF NOT 200?",body)
+        #print("WHAT IS CODE IF NOT 200?",body)
        
 
         self.close()
