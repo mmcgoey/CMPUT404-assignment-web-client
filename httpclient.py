@@ -108,12 +108,16 @@ class HTTPClient(object):
 
         find_delimitter = data.find('\r\n\r\n')
 
+        header_str = ""
         # if find_delimitter returns 1 then 'r\n\r\n' has not been found
         if find_delimitter == -1:
             return data
         else:
             # The body and the headers are seperated by 'r\n\r\n' so to get headers I am returning the string from the beginning till \r\n\r\n is reached
-            return data[:find_delimitter]
+            for i in data[0:find_delimitter]:
+                header_str += i
+            
+            return header_str
         
     # The purpose of this function is to get the body returned by the server
     def get_body(self, data):
@@ -123,13 +127,18 @@ class HTTPClient(object):
         # I used the ideas suggested in the stack over flow post to seperate the body from the headers
 
         find_delimitter = data.find('\r\n\r\n')
-
+        body_str = ""
         # if find_delimitter returns -1 then 'r\n\r\n' has not be found 
         if find_delimitter == -1:
             return data
         else:
-            # return body. The body is from \r\n\r\n to the end of the string
-            return data[find_delimitter:]
+            # return body. The body is from \r\n\r\n to the end of the string 
+            delimitter_len = len('\r\n\r\n')
+            # need to add the delimitter_len so that the \r\n\r\n is not included in the body output
+            for i in data[find_delimitter + delimitter_len:]:
+                body_str += i
+            return body_str
+            
         
     
     def sendall(self, data):
