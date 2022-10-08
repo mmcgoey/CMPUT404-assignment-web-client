@@ -29,6 +29,18 @@ from urllib import response
 from urllib.parse import urlencode
 from sys import getsizeof
 # you may use urllib to encode data appropriately
+
+
+
+'''
+CITATIONS: 
+My get_headers(self,data) and get_body(self,data) function is based off the code snippet from the stack over flow website linked below
+https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
+
+My get_remote_ip(self,host) function is taken from the provided code in lab 2 client.py 
+
+
+'''
 import urllib.parse
 
 def help():
@@ -40,15 +52,21 @@ class HTTPResponse(object):
         self.body = body
 
 class HTTPClient(object):
+
+    # The purpose of this function is to get the port number that is provided in the url
+    # If no port number is provided in the url then I will default the port number to 80
     def get_host_port(self,url):
         port_num = urllib.parse.urlparse(url).port
-        #print("HOST NAME",urllib.parse.urlparse(url).hostname)
+        
+        if port_num == None:
+            port_num = 80
+        
         return port_num
-        #print("WHAT IS PARSE",port_num)
+        
     
     def get_remote_ip(self,host):
-        #Note this method was provided in the lab 2 code
-        #print(f'Getting IP for {host}')
+        # CITATION: This function was taken from lab 2 client.py
+        
         try:
             remote_ip = socket.gethostbyname( host )
         except socket.gaierror:
@@ -64,25 +82,44 @@ class HTTPClient(object):
         self.socket.connect((host, port))
         return None
 
+    # The purpose of this function is to get the status code returned by the server
     def get_code(self, data):
         code = int(data.split()[1])
         return code
 
+    # The purpose of this function is to get the headers returned by the server
     def get_headers(self,data):
+        # CITATION BELOW
         # https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
-        # I used the cite above to solve this problem
-        find_delimitter = data.find('\r\n\r\n')
-        if find_delimitter >= 0:
-            return data[:find_delimitter]
-        return data
 
-    def get_body(self, data):
-        # https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
-        # I used the cite above to solve this problem
+        # I used the ideas suggest in this stack over flow post to seperate the body from the headers
+
+
         find_delimitter = data.find('\r\n\r\n')
-        if find_delimitter >= 0:
-            return data[find_delimitter +4:]
-        return data
+
+        # if find_delimitter returns 1 then 'r\n\r\n' has not been found
+        if find_delimitter == -1:
+            return data
+        else:
+            # The body and the headers are seperated by 'r\n\r\n' so to get headers I am returning the string from the beginning till \r\n\r\n is reached
+            return data[:find_delimitter]
+        
+    # The purpose of this function is to get the body returned by the server
+    def get_body(self, data):
+        # CITATION BELOW
+        # https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
+
+        # I used the ideas suggested in the stack over flow post to seperate the body from the headers
+
+        find_delimitter = data.find('\r\n\r\n')
+
+        # if find_delimitter returns -1 then 'r\n\r\n' has not be found 
+        if find_delimitter == -1:
+            return data
+        else:
+            # return body. The body is from \r\n\r\n to the end of the string
+            return data[find_delimitter:]
+        
     
     def sendall(self, data):
         self.socket.sendall(data.encode('utf-8'))
@@ -107,51 +144,38 @@ class HTTPClient(object):
         code = 500
 
         body = ""
-
+ 
+        # Getting host name
         host = urllib.parse.urlparse(url).hostname
-        #print ("IS HOST RETURNING?",host)
-        #host_name = socket.gethostbyname(host)
         
+        # Getting host ip address using the host name
         host_ip = self.get_remote_ip(host)
 
 
         port = self.get_host_port(url)
 
-        if port == None:
-            port = 80
-            #print("FOUND PROBLEMMMMM")
-
-        #print("is port now 80?",port)
-        #print("WHAT IS IP",host_ip)
-        #print("WHAT IS THE URL",url)
-
         response = 'GET %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n'%(url,host)
-        #response = 'GET / HTTP/1.1\r\nHost: %s\r\n\r\n'%(host)
-
+        
+        # establish a connection
         self.connect(host_ip,port)
 
+        # send request
         self.sendall(response)
 
-        #self.socket.shutdown(socket.SHUT_WR)
-
+        # get servers response
         recv_info = self.recvall(self.socket)
 
         print(recv_info)
 
         is_headers = self.get_headers(recv_info)
-        #print("CHECK IF GET_HEADERS WORKS",is_headers)
-
-        #print("IS RECV_INFO EMPTY",recv_info)
-        #code = recv_info.split()
+        
         code = self.get_code(recv_info)
 
         body = self.get_body(recv_info)
-        #body += recv_info
-        #print("WHAT IS CODE",body)
-
-        self.socket.close()
 
         
+        self.socket.close()
+  
         return HTTPResponse(code, body)
 
     def POST(self, url, args=None):
@@ -161,66 +185,36 @@ class HTTPClient(object):
 
         host = str(host)
         
-        #print("WHAT ARE THE ARGS",args)
-
-        
-        
         host_ip = self.get_remote_ip(host)
-
 
         port = self.get_host_port(url)
 
-        if port == None:
-            port = 80
-            #print("FOUND PROBLEMMMMM")
-
-        #print("is port now 80?",port)
-        #print("WHAT IS IP",host_ip)
-        #print("WHAT IS THE URL",url)
-
-       
-
+        # If args are provided then encode the args into query string formate.
+        # If no args are provided then there's no need to encode anything
         if args != None:
             args_encode = urlencode(args)
-            #print("WHAT IS args_encode",args_encode)
+            
             response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: %d\r\nConnection: close\r\n\r\n'%(url,host,port,len(args_encode)) + args_encode 
         else:
             response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'%(url,host,port) 
 
-
-       
-
-        #print("WHAT IS MY RESPONSE", response)
-        
-
+        # establish a connection
         self.connect(host_ip,port)
 
+        # send request
         self.sendall(response)
       
-
-        #self.socket.shutdown(socket.SHUT_WR)
-
+        # get servers response
         recv_info = self.recvall(self.socket)
 
         print(recv_info)
         
-
-        #print("IS RECV_INFO EMPTY",recv_info)
-       
-
         code = self.get_code(recv_info)
 
         body = self.get_body(recv_info)
         
-
-        #print("WHAT IS CODE IF NOT 200?",body)
-       
-
         self.close()
-
-
-
-        
+ 
         return HTTPResponse(code, body)
 
     def command(self, url, command="GET", args=None):
@@ -237,8 +231,8 @@ if __name__ == "__main__":
         help()
         sys.exit(1)
     elif (len(sys.argv) == 3):
-        print("TEST WHAT ARGV[2] IS",sys.argv[2])
+        
         print(client.command( sys.argv[2], sys.argv[1] ))
     else:
-        print("TEST WHAT ARGV[1] IS",sys.argv[1])
+        
         print(client.command( sys.argv[1] ))
