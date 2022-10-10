@@ -127,16 +127,16 @@ class HTTPClient(object):
         # I used the ideas suggested in the stack over flow post to seperate the body from the headers
 
         find_index = data.find('\r\n\r\n')
-        
+
         body_str = ""
         # if find_index is -1 then 'r\n\r\n' has not be found 
         if find_index == -1:
             return data
         else:
             # return body. The body is from \r\n\r\n to the end of the string 
-            delimitter_len = len('\r\n\r\n')
-            # need to add the delimitter_len so that the \r\n\r\n is not included in the body output
-            for i in data[find_index + delimitter_len:]:
+            find_index_len = len('\r\n\r\n')
+            # need to add the find_index_len so that the \r\n\r\n is not included in the body output
+            for i in data[find_index + find_index_len:]:
                 body_str += i
             return body_str
             
