@@ -40,4 +40,4 @@ https://www.w3schools.com/python/ref_requests_get.asp
 
 Collaboration
 ========================
-I collaborated with Aaron Skiba during the completion of this assignment. I confirm that we followed the collaboration guidlines and did not share any code
+I collaborated with Aaron Skiba during the completion of this assignment. I confirm that we followed the collaboration guidelines and did not share any code
