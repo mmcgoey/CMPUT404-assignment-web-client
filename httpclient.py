@@ -86,7 +86,7 @@ class HTTPClient(object):
             print ('Hostname could not be resolved. Exiting')
             sys.exit()
 
-        print (f'Ip address of {host} is {remote_ip}')
+        
         return remote_ip
     
 
