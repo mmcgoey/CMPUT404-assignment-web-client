@@ -20,8 +20,7 @@ compatible) http://docs.python.org/2/library/socketserver.html
 
 Citations
 ========================
-CITATIONS: 
-My get_headers(self,data) and get_body(self,data) function is based off the code snippet from the stack over flow website linked below
+My get_headers(self,data) and get_body(self,data) function are based off the code snippet from the stack over flow website linked below
 https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
 These functions are based off an answer provided by bogdan on Dec 12, 2011
 
