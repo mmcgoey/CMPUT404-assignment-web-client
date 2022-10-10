@@ -106,15 +106,15 @@ class HTTPClient(object):
         # I used the ideas suggest in this stack over flow post to seperate the body from the headers
 
 
-        find_delimitter = data.find('\r\n\r\n')
+        find_index = data.find('\r\n\r\n')
 
         header_str = ""
-        # if find_delimitter returns 1 then 'r\n\r\n' has not been found
-        if find_delimitter == -1:
+        # if find_index is -1 then '\r\n\r\n' has not been found
+        if find_index == -1:
             return data
         else:
-            # The body and the headers are seperated by 'r\n\r\n' so to get headers I am returning the string from the beginning till \r\n\r\n is reached
-            for i in data[0:find_delimitter]:
+            # The body and the headers are seperated by '\r\n\r\n' so to get headers I am returning the string from the beginning till \r\n\r\n is reached
+            for i in data[0:find_index]:
                 header_str += i
             
             return header_str
@@ -126,16 +126,17 @@ class HTTPClient(object):
 
         # I used the ideas suggested in the stack over flow post to seperate the body from the headers
 
-        find_delimitter = data.find('\r\n\r\n')
+        find_index = data.find('\r\n\r\n')
+        
         body_str = ""
-        # if find_delimitter returns -1 then 'r\n\r\n' has not be found 
-        if find_delimitter == -1:
+        # if find_index is -1 then 'r\n\r\n' has not be found 
+        if find_index == -1:
             return data
         else:
             # return body. The body is from \r\n\r\n to the end of the string 
             delimitter_len = len('\r\n\r\n')
             # need to add the delimitter_len so that the \r\n\r\n is not included in the body output
-            for i in data[find_delimitter + delimitter_len:]:
+            for i in data[find_index + delimitter_len:]:
                 body_str += i
             return body_str
             
