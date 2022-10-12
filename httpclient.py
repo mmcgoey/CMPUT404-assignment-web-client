@@ -105,6 +105,8 @@ class HTTPClient(object):
         return code
 
     # The purpose of this function is to get the headers returned by the server
+    # Note I do not call this function in my code. I implemented it since it was in the provided httpclient.py file
+
     def get_headers(self,data):
         # CITATION BELOW
         # https://stackoverflow.com/questions/8474745/how-do-i-get-the-body-of-a-http-response-from-a-string-containing-the-entire-res
