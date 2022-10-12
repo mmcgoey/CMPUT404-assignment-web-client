@@ -164,20 +164,38 @@ class HTTPClient(object):
 
     def GET(self, url, args=None):
 
+        # Not really sure what we are expected to do with args for GET since it isn't tested in free tests or discussed in the requirements.org
+
         code = 500
 
         body = ""
  
         # Getting host name
         host = urllib.parse.urlparse(url).hostname
+
+        path = urllib.parse.urlparse(url).path   
+
+        query = urllib.parse.urlparse(url).query
+
         
+
+        if path == "":
+            path += "/"
+        
+        if query != "":
+            path += "?"
+            path += query
+
         # Getting host ip address using the host name
         host_ip = self.get_remote_ip(host)
 
 
         port = self.get_host_port(url)
 
-        response = 'GET %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n'%(url,host)
+ 
+        response = 'GET %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n'%(path,host)
+
+        
         
         # establish a connection
         self.connect(host_ip,port)
@@ -210,6 +228,11 @@ class HTTPClient(object):
         
         host_ip = self.get_remote_ip(host)
 
+        path = urllib.parse.urlparse(url).path
+
+        if path == "":
+            path += "/"
+
         port = self.get_host_port(url)
 
         # If args are provided then encode the args into query string formate.
@@ -217,10 +240,11 @@ class HTTPClient(object):
         if args != None:
             args_encode = urlencode(args)
   
-            response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: %d\r\nConnection: close\r\n\r\n'%(url,host,port,len(args_encode)) + args_encode 
+            response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: %d\r\nConnection: close\r\n\r\n'%(path,host,port,len(args_encode)) + args_encode 
         else:
-            response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'%(url,host,port) 
+            response = 'POST %s HTTP/1.1\r\nHost: %s:%d\r\nContent-Type: application/x-www-form-urlencoded\r\nAccept: application/x-www-form-urlencoded\r\nContent-Length: 0\r\nConnection: close\r\n\r\n'%(path,host,port) 
 
+        
         # establish a connection
         self.connect(host_ip,port)
 
