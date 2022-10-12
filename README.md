@@ -34,7 +34,10 @@ https://stackoverflow.com/questions/45695168/send-raw-post-request-using-socket,
 https://www.internalpointers.com/post/making-http-requests-sockets-python,
 https://www.geeksforgeeks.org/get-post-requests-using-python/,
 https://stackoverflow.com/questions/28670835/python-socket-client-post-parameters,
-https://www.w3schools.com/python/ref_requests_get.asp
+https://www.w3schools.com/python/ref_requests_get.asp,
+https://www.ibm.com/docs/en/cics-ts/5.3?topic=protocol-http-requests,
+https://www.ibm.com/docs/en/cics-ts/5.3?topic=samples-example-http-get-request-using-query-string,
+https://www.ibm.com/docs/en/cics-ts/5.3?topic=concepts-components-url#dfhtl_uricomp
 
 
 Collaboration
